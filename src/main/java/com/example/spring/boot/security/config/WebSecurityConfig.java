@@ -10,6 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class WebSecurityConfig {
 
+    private static  final String[] WHITE_LIST_URLS = {
+        "/register"
+    };
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(12);
