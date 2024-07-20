@@ -39,7 +39,7 @@ public class RegistrationController {
 
     @GetMapping("/resendVerifyToken")
     public String resendVerificationToken(){
-
+        return null;
     }
 
     private String applicationUrl(HttpServletRequest request) {
