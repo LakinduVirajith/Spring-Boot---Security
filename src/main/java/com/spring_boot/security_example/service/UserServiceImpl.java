@@ -1,7 +1,9 @@
 package com.spring_boot.security_example.service;
 
+import com.spring_boot.security_example.entity.PasswordRestToken;
 import com.spring_boot.security_example.entity.User;
 import com.spring_boot.security_example.entity.VerificationToken;
+import com.spring_boot.security_example.repository.PasswordRestTokenRepository;
 import lombok.RequiredArgsConstructor;
 import com.spring_boot.security_example.model.UserModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +12,7 @@ import com.spring_boot.security_example.repository.UserRepository;
 import com.spring_boot.security_example.repository.VerificationTokenRepository;
 
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,6 +22,8 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     private final VerificationTokenRepository verificationTokenRepository;
+
+    private final PasswordRestTokenRepository passwordRestTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -70,5 +75,46 @@ public class UserServiceImpl implements UserService{
         verificationTokenRepository.save(verificationToken);
 
         return verificationToken;
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordRestToken passwordRestToken = new PasswordRestToken(user, token);
+        passwordRestTokenRepository.save(passwordRestToken);
+    }
+
+    @Override
+    public String validatePassowrdResetToken(String token) {
+        PasswordRestToken passwordRestToken = passwordRestTokenRepository.findByToken(token);
+
+        if(passwordRestToken == null){
+            return "invalid";
+        }
+
+        User user = passwordRestToken.getUser();
+        Calendar calendar = Calendar.getInstance();
+
+        if(passwordRestToken.getExpirationTime().getTime() - calendar.getTime().getTime() <= 0){
+            passwordRestTokenRepository.delete(passwordRestToken);
+            return "expired";
+        }
+
+        return "valid";
+    }
+
+    @Override
+    public Optional<User> getUserByPasswordResetToken(String token) {
+        return Optional.ofNullable(passwordRestTokenRepository.findByToken(token).getUser());
+    }
+
+    @Override
+    public void changePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }
