@@ -1,10 +1,10 @@
-package com.example.spring.boot.security;
+package com.spring_boot.security_example;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SecurityApplicationTests {
+class SecurityExampleApplicationTests {
 
 	@Test
 	void contextLoads() {

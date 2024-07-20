@@ -35,6 +35,10 @@ The Repository package is where you define the interfaces or classes responsible
 
 The Service package contains the business logic of your application. These classes provide services to the rest of the application and act as intermediaries between the controller (which handles HTTP requests) and the repository (which interacts with the database). The service layer is responsible for handling complex business rules, data processing, validation, and coordinating multiple repositories if needed. Services are usually annotated with @Service.
 
+## Event
+
+The "event" package in your Spring Boot project contains classes related to domain-specific events that occur within your application. These events represent significant occurrences or actions specific to your application's business logic. The goal of the "event" package is to organize and manage these events separately from other components, making it easier to handle and respond to them.
+
 ---
 
 # SPRING BOOT ANNOTATIONS
