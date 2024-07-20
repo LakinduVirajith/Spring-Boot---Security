@@ -1,4 +1,4 @@
-package com.example.spring.boot.security.entity;
+package com.spring_boot.security_example.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,8 +11,9 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class VerificationToken {
-    /* Expiration time 10 mints */
-    private static  final int EXPIRATION_TIME = 10;
+
+    // Expiration time 10 minutes
+    private static final int EXPIRATION_TIME = 10;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,30 +24,28 @@ public class VerificationToken {
     private Date expirationTime;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(
-            name = "user_id",
+    @JoinColumn(name = "user_id" ,
             nullable = false,
-            foreignKey = @ForeignKey(name = "FK_USER_VERIFY_TOKEN")
-    )
+            foreignKey = @ForeignKey(name = "FK_USER_VERIFY_TOKEN"))
     private User user;
 
-    public VerificationToken(User user, String token){
+    public VerificationToken(User user ,String token){
         super();
         this.token = token;
         this.user = user;
-        this.expirationTime = calculateExpirationDate(EXPIRATION_TIME);
+        this.expirationTime = calculateExpirationDate();
     }
 
     public VerificationToken(String token){
         super();
         this.token = token;
-        this.expirationTime = calculateExpirationDate(EXPIRATION_TIME);
+        this.expirationTime = calculateExpirationDate();
     }
 
-    private Date calculateExpirationDate(int expirationTime) {
+    private Date calculateExpirationDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
-        calendar.add(Calendar.MINUTE, expirationTime);
+        calendar.add(Calendar.MINUTE, VerificationToken.EXPIRATION_TIME);
         return new Date(calendar.getTime().getTime());
     }
 }
